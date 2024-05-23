@@ -32,12 +32,12 @@
   :group 'tracmacs)
 
 (defcustom tracmacs-ticket-priorities-alist nil
-  "Possible ticket priorities, e.g. 'major', 'minor', 'blocker'"
+  "Possible ticket priorities, e.g. `major`, `minor`, `blocker`"
   :type 'alist
   :group 'tracmacs)
 
 (defcustom tracmacs-ticket-resolutions-alist nil
-  "Possible ticket resolutions, e.g. 'wontfix', 'can\'t reproduce', 'worksforme'"
+  "Possible ticket resolutions, e.g. `wontfix`, `can\'t reproduce`, `worksforme`"
   :type 'alist
   :group 'tracmacs)
 
@@ -66,9 +66,10 @@ to Trac. This will set the trac_form_ticket cookie as a side effect."
         (gethash "date" last-change)))))
 
 (defun tracmacs--url-cookie-retrieve (&optional secure)
-  "*extremely exasperated sigh* because url-cookie-retrieve uses a regular expression for
-string searching, simply calling (url-retrieve-host host) will, to your utter astonishment
-also, not return the cookies listed under 'host' in their hash table of cookies"
+  "*extremely exasperated sigh* because url-cookie-retrieve uses a regular
+expression for string searching, simply calling (url-retrieve-host host) will, to
+your utter astonishment also, not return the cookies listed under `host` in their
+hash table of cookies"
   (let ((storage (if secure
 		     (append url-cookie-secure-storage url-cookie-storage)
 		   url-cookie-storage))
