@@ -151,3 +151,22 @@ also, not return the cookies listed under 'host' in their hash table of cookies"
              ("comment" . ,comment)
              ("submit" . "Submit changes")))))
     (kill-buffer (url-retrieve-synchronously (tracmacs-url-for-ticket ticket-number)))))
+
+(defun tracmacs-comment-on-ticket (ticket-number comment)
+  (let* ((modify-time (number-to-string (tracmacs--get-ticket-modify-time ticket-number)))
+         (form-token (tracmacs--get-form-token))
+         (auth-token (tracmacs--get-auth-token))
+         (trac-cookie-string (concat "trac_auth_token=" form-token "; trac_auth=" auth-token ";"))
+         (url-request-method "POST")
+         (url-request-extra-headers
+          `(("Content-Type" . "application/x-www-form-urlencoded")
+            ("Cookies" . ,trac-cookie-string)))
+         (url-request-data
+          (tracmacs--format-request-data
+           `(("__FORM_TOKEN" . ,form-token)
+             ("start_time" . ,modify-time)
+             ("view_time" . ,modify-time)
+             ("action" . "leave")
+             ("comment" . ,comment)
+             ("submit" . "Submit changes")))))
+    (kill-buffer (url-retrieve-synchronously (tracmacs-url-for-ticket ticket-number)))))
