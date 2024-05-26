@@ -117,6 +117,8 @@ hash table of cookies"
              "&"))
 
 (defun tracmacs-reopen-ticket (ticket-number &optional comment)
+  (if (null (tracmacs--get-auth-token))
+      (tracmacs-authenticate))
   (let* ((modify-time (number-to-string (tracmacs--get-ticket-modify-time ticket-number)))
          (form-token (tracmacs--get-form-token))
          (auth-token (tracmacs--get-auth-token))
@@ -134,6 +136,8 @@ hash table of cookies"
     (kill-buffer (url-retrieve-synchronously (tracmacs-url-for-ticket ticket-number)))))
 
 (defun tracmacs-close-ticket (ticket-number &optional resolution comment)
+  (if (null (tracmacs--get-auth-token))
+      (tracmacs-authenticate))
   (let* ((modify-time (number-to-string (tracmacs--get-ticket-modify-time ticket-number)))
          (form-token (tracmacs--get-form-token))
          (auth-token (tracmacs--get-auth-token))
