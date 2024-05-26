@@ -159,6 +159,9 @@ hash table of cookies"
     (kill-buffer (url-retrieve-synchronously (tracmacs-url-for-ticket ticket-number)))))
 
 (defun tracmacs-comment-on-ticket (ticket-number comment)
+  ;; TODO: Should this be a hook so the user can choose whether or not to authenticate?
+  (if (null (tracmacs--get-auth-token))
+      (tracmacs-authenticate))
   (let* ((modify-time (number-to-string (tracmacs--get-ticket-modify-time ticket-number)))
          (form-token (tracmacs--get-form-token))
          (auth-token (tracmacs--get-auth-token))
