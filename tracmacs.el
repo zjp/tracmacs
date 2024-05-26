@@ -71,26 +71,26 @@ expression for string searching, simply calling (url-retrieve-host host) will, t
 your utter astonishment also, not return the cookies listed under `host` in their
 hash table of cookies"
   (let ((storage (if secure
-		     (append url-cookie-secure-storage url-cookie-storage)
-		   url-cookie-storage))
-	(case-fold-search t)
+                     (append url-cookie-secure-storage url-cookie-storage)
+                   url-cookie-storage))
+        (case-fold-search t)
         (host (url-host (url-generic-parse-url tracmacs-trac-host)))
         (localpart (nth 0 (url-path-and-query (url-generic-parse-url tracmacs-trac-host))))
-	cookies retval localpart-match)
+        cookies retval localpart-match)
     (dolist (cur storage)
       (setq cookies (cdr cur))
       (if (and (car cur)
-	       (string= (car cur) host))
-	  ;; The domains match - a possible hit!
-	  (dolist (cur cookies)
-	    (and (if (and (stringp
-			   (setq localpart-match (url-cookie-localpart cur)))
-			  (stringp localpart))
-		     (string-match (concat "^" (regexp-quote localpart-match))
-				   localpart)
-		   (equal localpart localpart-match))
-		 (not (url-cookie-expired-p cur))
-		 (setq retval (cons cur retval))))))
+               (string= (car cur) host))
+          ;; The domains match - a possible hit!
+          (dolist (cur cookies)
+            (and (if (and (stringp
+                           (setq localpart-match (url-cookie-localpart cur)))
+                          (stringp localpart))
+                     (string-match (concat "^" (regexp-quote localpart-match))
+                                   localpart)
+                   (equal localpart localpart-match))
+                 (not (url-cookie-expired-p cur))
+                 (setq retval (cons cur retval))))))
     retval))
 
 (defun tracmacs--get-form-token ()
