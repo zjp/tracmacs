@@ -55,15 +55,16 @@
 (defun tracmacs--get-ticket-modify-time (ticket-number)
   "Get the last time the ticket was modified, which must be included in requests
 to Trac. This will set the trac_form_ticket cookie as a side effect."
-  (let ((buf (tracmacs-get-ticket ticket-number)))
-    (setq tracmacs--form-token ...)
-    (with-current-buffer buf
-      (goto-char (point-min))
-      (re-search-forward "var changes")
-      (let* ((json-array-type 'list)
-             (change-list (json-parse-string (substring (thing-at-point 'line t) 18 -2)))
-             (last-change (elt change-list (1- (length change-list)))))
-        (gethash "date" last-change)))))
+  (if (null (tracmacs--get-auth-token))
+      (tracmacs-authenticate))
+  (let* ((html-dom-tree (with-current-buffer
+                            (tracmacs-get-ticket ticket-number)
+                          (libxml-parse-html-region (point-min) (point-max))))
+         retval)
+    (dolist (el (dom-by-tag (dom-by-class (dom-by-id html-dom-tree "propertyform") "buttons") 'input))
+      (if (string= (dom-attr el 'name) "start_time")
+          (setq retval (string-to-number (dom-attr el 'value)))))
+    retval))
 
 (defun tracmacs--url-cookie-retrieve (&optional secure)
   "*extremely exasperated sigh* because url-cookie-retrieve uses a regular
